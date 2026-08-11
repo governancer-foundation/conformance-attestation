@@ -58,6 +58,19 @@ Errors are returned rather than thrown, and all of them at once: a caller
 checking a batch wants the whole picture, and half the rules are about honesty
 rather than syntax.
 
+From a terminal:
+
+```bash
+npx @governancer-foundation/conformance-attestation ./records/    # check yours
+npx @governancer-foundation/conformance-attestation --corpus      # check us
+```
+
+The second runs the shipped corpus of records with known verdicts through this
+implementation. If you have written your own validator, that is how you find
+out where it disagrees — and a disagreement is worth reporting, because it
+usually means the specification admits two readings rather than that your code
+is wrong.
+
 ## Writing a profile
 
 A profile declares the requirements it covers, the technique vocabulary it
