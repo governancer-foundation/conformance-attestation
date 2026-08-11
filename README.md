@@ -71,7 +71,7 @@ Known profiles:
 
 | Profile | Requirements | Implemented in |
 |---|---|---|
-| `ai-act/art-50` | EU AI Act, Article 50 | [`art50-disclosure-sdk`](https://github.com/governancer-foundation/art50-disclosure-sdk) |
+| `ai-act/art-50` | EU AI Act, the conformance schema | [`conformance-attestation`](https://github.com/governancer-foundation/conformance-attestation) |
 
 ## Status
 
@@ -81,9 +81,14 @@ under is not settled — publishing it under one product's domain would tie a
 deliberately neutral schema to a single brand. Pin your own if you need
 stability today; this one will change exactly once.
 
-This package is intended to move to a neutral home with its own change
-procedure. A format governed by one company is a format nobody else writes a
-profile for.
+This package is intended to move to a neutral home. Its change procedure is
+already published — see [`GOVERNANCE.md`](./GOVERNANCE.md) — because a process
+announced after other people depend on you is not a process.
+
+Two things there are worth knowing before you build on this: **a profile needs
+nobody's approval**, and **from the second independently maintained profile
+onward, changing the shared schema needs the agreement of every shipped
+profile's maintainer**.
 
 ## License
 

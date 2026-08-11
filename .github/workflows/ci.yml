@@ -1,0 +1,102 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2026 Agonist Development AB
+#
+# CI — Build / Lint / Test for @governancer-foundation/conformance-attestation.
+# Single npm/TypeScript package: a library, imported by callers.
+# Build system is npm + tsc (NOT pnpm/turbo). Tests run on vitest.
+# Also runs the hand-authored anti-leak guard (scripts/oss-ip-guard.sh) so no
+# secret or internal path can ride a build to a
+# public push.
+
+name: CI
+
+on:
+  push:
+    branches: [staging, main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build / Lint / Test
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck (source + specs)
+        # Keep `--noEmit` so this step never writes to dist/.
+        run: npm run typecheck
+
+      - name: Test (vitest)
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke — the built package validates the shipped fixtures
+        # The suite runs against sources. This loads what would actually ship
+        # and puts the conformance corpus through it, so a broken build output
+        # or a fixture that drifted from the schema cannot pass unnoticed.
+        #
+        # Written to a file rather than inlined: the script is JavaScript with
+        # its own template literals, and quoting it into a shell argument makes
+        # both languages harder to read than either deserves. It goes in the
+        # workspace, not a temporary directory — a module's relative import
+        # resolves against the module's own location, so anywhere else it would
+        # look for the build output beside itself and not find it.
+        run: |
+          cat > ci-smoke.mjs <<'SMOKE'
+          import { readFileSync, readdirSync } from "node:fs";
+          import { validateStatement } from "./dist/index.js";
+          let checked = 0;
+          for (const kind of ["valid", "invalid"]) {
+            const dir = `schema/conformance/${kind}`;
+            for (const f of readdirSync(dir).filter((n) => n.endsWith(".json"))) {
+              const doc = JSON.parse(readFileSync(`${dir}/${f}`, "utf8"));
+              const got = validateStatement(doc).valid;
+              if (got !== (kind === "valid")) throw new Error(`${kind}/${f}: verdict ${got}`);
+              checked++;
+            }
+          }
+          if (checked === 0) throw new Error("no fixtures found");
+          console.log(`smoke ok: ${checked} fixtures`);
+          SMOKE
+          node ci-smoke.mjs
+          rm -f ci-smoke.mjs
+
+      - name: Anti-leak guard (oss-ip-guard --dir .)
+        # Sweep the publishable tree for secret/internal/trailer
+        # leaks before anything is publishable. The guard is hand-authored
+        # at scripts/oss-ip-guard.sh — CI only calls it.
+        run: bash scripts/oss-ip-guard.sh --dir .
+
+      - name: Pre-publish check (if present)
+        # Optional: only runs when the repo carries a pre-publish-check.sh.
+        # Keeps CI green before that script lands while wiring it once it does.
+        run: |
+          if [ -f scripts/pre-publish-check.sh ]; then
+            bash scripts/pre-publish-check.sh
+          else
+            echo "scripts/pre-publish-check.sh not present — skipping."
+          fi
