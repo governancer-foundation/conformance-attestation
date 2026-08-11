@@ -25,7 +25,8 @@
     "predicateType": {
       "description": "URI naming the predicate schema. The one this package emits is provisional until a neutral home is settled.",
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "pattern": "\\S"
     },
     "predicate": {
       "$ref": "urn:conformance-attestation:v0.1:predicate"
@@ -42,19 +43,22 @@
       "properties": {
         "name": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "digest": {
           "type": "object",
           "minProperties": 1,
           "additionalProperties": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "unpinned": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         }
       },
       "oneOf": [

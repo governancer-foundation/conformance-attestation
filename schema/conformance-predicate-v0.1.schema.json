@@ -25,11 +25,13 @@
       "properties": {
         "id": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "version": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         }
       }
     },
@@ -44,11 +46,13 @@
       "properties": {
         "id": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "version": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "digest": {
           "$ref": "#/$defs/digest"
@@ -75,7 +79,8 @@
           "minItems": 1,
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "\\S"
           }
         },
         "tools": {
@@ -89,7 +94,8 @@
             "properties": {
               "name": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "pattern": "\\S"
               },
               "version": {
                 "type": "string"
@@ -142,7 +148,8 @@
       "minItems": 1,
       "items": {
         "type": "string",
-        "minLength": 1
+        "minLength": 1,
+        "pattern": "\\S"
       }
     },
     "assessor": {
@@ -155,7 +162,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "independence": {
           "enum": [
@@ -194,7 +202,8 @@
       "minProperties": 1,
       "additionalProperties": {
         "type": "string",
-        "minLength": 1
+        "minLength": 1,
+        "pattern": "\\S"
       }
     },
     "outcome": {
@@ -218,7 +227,8 @@
       "properties": {
         "requirement": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "outcome": {
           "$ref": "#/$defs/outcome"
@@ -226,12 +236,14 @@
         "rationale": {
           "description": "Why the outcome is what it is. An outcome without a reason is not reviewable.",
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "exemptionClaimed": {
           "description": "The exemption relied on. Only meaningful where it lifts the requirement, so the outcome must then be notApplicable \u2014 a constraint expressed below.",
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         },
         "bindingFrom": {
           "description": "The date this requirement begins to bind this subject. Distinct from validity, which describes the record: transitional provisions are the norm.",
@@ -249,7 +261,8 @@
             "properties": {
               "name": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "pattern": "\\S"
               },
               "digest": {
                 "$ref": "#/$defs/digest"
