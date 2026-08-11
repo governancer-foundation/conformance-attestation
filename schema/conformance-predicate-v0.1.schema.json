@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:conformance-attestation:v0.1:predicate",
+  "title": "Regulatory conformance predicate",
+  "description": "Payload of an in-toto statement asserting which regulatory requirements a subject meets, on what evidence, and what was not examined. Axis-agnostic: a regulatory axis plugs in as a profile rather than appearing as a field. This document is normative for structure; the rules a validator must apply beyond structure are listed in the specification and mirrored in the conformance fixtures.",
+  "type": "object",
+  "required": [
+    "profile",
+    "assessment",
+    "method",
+    "limitations",
+    "assessor",
+    "validity"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "profile": {
+      "description": "The axis, and the version of the profile that interprets this payload.",
+      "type": "object",
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "catalogue": {
+      "description": "The requirement catalogue, where the profile uses one. Optional: a versioned artefact with a digest earns its keep for hundreds of amended criteria, and is overhead where a requirement identifier resolves to primary source on its own.",
+      "type": "object",
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "assessment": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/assessmentEntry"
+      }
+    },
+    "method": {
+      "type": "object",
+      "required": [
+        "techniques"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "techniques": {
+          "description": "Drawn from the vocabulary the profile declares. Deliberately not constrained here: a shared list would only ever suit the axis it was written for.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string"
+              },
+              "ruleset": {
+                "type": "string"
+              },
+              "rulesetDigest": {
+                "$ref": "#/$defs/digest"
+              }
+            }
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "surfaces": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "sampling": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "surfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "limitations": {
+      "description": "What this assessment did not examine. Mandatory and non-empty: a record that does not say what it failed to look at is an advertisement, not an assessment.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "assessor": {
+      "type": "object",
+      "required": [
+        "name",
+        "independence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "independence": {
+          "enum": [
+            "self",
+            "second-party",
+            "third-party"
+          ]
+        }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "required": [
+        "issued"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "issued": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "supersedes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "description": "Cryptographic digests keyed by algorithm.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "outcome": {
+      "description": "Whether the subject meets the requirement. notEvaluated is present because without it 'we did not look' is indistinguishable from 'it passed'.",
+      "enum": [
+        "supports",
+        "partiallySupports",
+        "doesNotSupport",
+        "notApplicable",
+        "notEvaluated"
+      ]
+    },
+    "assessmentEntry": {
+      "type": "object",
+      "required": [
+        "requirement",
+        "outcome",
+        "rationale"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "requirement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        },
+        "rationale": {
+          "description": "Why the outcome is what it is. An outcome without a reason is not reviewable.",
+          "type": "string",
+          "minLength": 1
+        },
+        "exemptionClaimed": {
+          "description": "The exemption relied on. Only meaningful where it lifts the requirement, so the outcome must then be notApplicable \u2014 a constraint expressed below.",
+          "type": "string",
+          "minLength": 1
+        },
+        "bindingFrom": {
+          "description": "The date this requirement begins to bind this subject. Distinct from validity, which describes the record: transitional provisions are the norm.",
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "digest": {
+                "$ref": "#/$defs/digest"
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "exemptionClaimed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "const": "notApplicable"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

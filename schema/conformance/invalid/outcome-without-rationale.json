@@ -1,0 +1,39 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "support-bot",
+      "unpinned": "A deployed service has no artefact digest."
+    }
+  ],
+  "predicateType": "urn:conformance-attestation:v0.1",
+  "predicate": {
+    "profile": {
+      "id": "ai-act/art-50",
+      "version": "0.1"
+    },
+    "assessment": [
+      {
+        "requirement": "EU-2024-1689:Art50.1",
+        "outcome": "notEvaluated",
+        "rationale": "",
+        "bindingFrom": "2026-08-02"
+      }
+    ],
+    "method": {
+      "techniques": [
+        "declaredSystemDescription"
+      ]
+    },
+    "limitations": [
+      "Whether the disclosure was actually shown is not assessed."
+    ],
+    "assessor": {
+      "name": "Agonist Development AB",
+      "independence": "self"
+    },
+    "validity": {
+      "issued": "2026-08-11T00:00:00.000Z"
+    }
+  }
+}

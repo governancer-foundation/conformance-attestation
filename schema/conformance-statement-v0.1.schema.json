@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:conformance-attestation:v0.1:statement",
+  "title": "in-toto statement carrying a regulatory conformance predicate",
+  "description": "The envelope is the framework's; only the predicate is ours. A verifier that already handles in-toto statements needs no change to accept these.",
+  "type": "object",
+  "required": [
+    "_type",
+    "subject",
+    "predicateType",
+    "predicate"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "_type": {
+      "const": "https://in-toto.io/Statement/v1"
+    },
+    "subject": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/subject"
+      }
+    },
+    "predicateType": {
+      "description": "URI naming the predicate schema. The one this package emits is provisional until a neutral home is settled.",
+      "type": "string",
+      "minLength": 1
+    },
+    "predicate": {
+      "$ref": "urn:conformance-attestation:v0.1:predicate"
+    }
+  },
+  "$defs": {
+    "subject": {
+      "description": "What the assessment is about. Either pinned by digest or explicitly unpinned with a reason \u2014 never silently unpinned, because an omitted digest and one that was never possible are different facts.",
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "digest": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "unpinned": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "digest"
+          ],
+          "not": {
+            "required": [
+              "unpinned"
+            ]
+          }
+        },
+        {
+          "required": [
+            "unpinned"
+          ],
+          "not": {
+            "required": [
+              "digest"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

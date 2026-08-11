@@ -4,16 +4,44 @@
   "license": "Apache-2.0",
   "author": "Alexander Brichkin (Agonist Development AB)",
   "description": "A regulatory-conformance predicate for in-toto attestations: which requirements a subject meets, on what evidence, and — mandatorily — what was not examined. Axis-agnostic; regulatory axes plug in as profiles.",
-  "keywords": ["in-toto", "attestation", "conformance", "compliance", "supply-chain", "provenance"],
+  "keywords": [
+    "in-toto",
+    "attestation",
+    "conformance",
+    "compliance",
+    "supply-chain",
+    "provenance"
+  ],
   "homepage": "https://github.com/governancer-foundation/conformance-attestation#readme",
-  "repository": { "type": "git", "url": "git+https://github.com/governancer-foundation/conformance-attestation.git" },
-  "bugs": { "url": "https://github.com/governancer-foundation/conformance-attestation/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/governancer-foundation/conformance-attestation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/governancer-foundation/conformance-attestation/issues"
+  },
   "type": "module",
-  "files": ["dist", "src", "README.md", "LICENSE", "NOTICE"],
+  "files": [
+    "dist",
+    "src",
+    "schema",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
-  "engines": { "node": ">=20" },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schema/statement": "./schema/conformance-statement-v0.1.schema.json",
+    "./schema/predicate": "./schema/conformance-predicate-v0.1.schema.json"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
@@ -24,8 +52,12 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@vitest/coverage-v8": "^3.2.7",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "typescript": "^5.6.0",
     "vitest": "^3.2.7"
   },
-  "publishConfig": { "access": "public" }
+  "publishConfig": {
+    "access": "public"
+  }
 }
