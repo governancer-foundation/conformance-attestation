@@ -1,6 +1,6 @@
 {
   "name": "@governancer-foundation/conformance-attestation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "Apache-2.0",
   "author": "Alexander Brichkin (Agonist Development AB)",
   "description": "A regulatory-conformance predicate for in-toto attestations: which requirements a subject meets, on what evidence, and — mandatorily — what was not examined. Axis-agnostic; regulatory axes plug in as profiles.",

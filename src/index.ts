@@ -25,6 +25,15 @@ export {
 } from "./types.js";
 
 export {
+  formatRequirementId,
+  isRequirementId,
+  parseRequirementId,
+  type RequirementId,
+  type RequirementLocation,
+  type RequirementResolver,
+} from "./requirement.js";
+
+export {
   isConformanceStatement,
   usesProvisionalPredicateType,
   validateStatement,
